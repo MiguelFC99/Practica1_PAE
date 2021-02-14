@@ -1,0 +1,8 @@
+{
+    "include":["src/**/*.ts"],
+    "exclude": ["src/**/*.spec.ts"],
+    "compilerOptions": {
+        "outDir": "dist/assets/scripts",
+        "target": "ES6"
+    }
+}
