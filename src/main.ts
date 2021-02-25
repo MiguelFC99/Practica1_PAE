@@ -6,6 +6,15 @@ let year: number = dateObj.getUTCFullYear();
 
 let fecha: string = year + "-" + month + "-" + day;
 
+const HTTTPMethods = {
+  "put": "PUT",
+  "post": "POST",
+  "get": "GET",
+  "delete": "DELETE"
+}
+
+const APIURL = window.location.protocol+'//'+window.location.host;
+
 console.log(fecha);
 let cardHTML = `{{#each news}}
 <div class="col-3"  id="cols">
@@ -20,20 +29,53 @@ let cardHTML = `{{#each news}}
 let card = document.getElementById('card');
 card.innerHTML = `<h5>Para buscar una noticia ingrese una palabra clave o un tema en espesifico</h5>`;
 
+function sendHTTPRequest(urlAPI, data, method, cbOK, cbError, authToken) {
+  // 1. Crear XMLHttpRequest object
+  let xhr = new XMLHttpRequest();
+  // 2. Configurar:  PUT actualizar archivo
+  xhr.open(method, urlAPI);
+  // 3. indicar tipo de datos JSON
+  xhr.setRequestHeader('Content-Type', 'application/json');
+  if (authToken)
+      xhr.setRequestHeader('x-auth-user', authToken);
+  // 4. Enviar solicitud al servidor
+  xhr.send(data);
+  // 5. Una vez recibida la respuesta del servidor
+  xhr.onload = function () {
+      if (xhr.status != 200 && xhr.status != 201) { // analizar el estatus de la respuesta HTTP 
+          // Ocurrió un error
+          cbError(xhr.status + ': ' + xhr.statusText);
+      } else {
+          //console.log(xhr.responseText); // Significa que fue exitoso
+          cbOK({
+              status: xhr.status,
+              data: xhr.responseText
+          });
+      }
+  };
+}
+
+
 let btnSrch = document.getElementById('btnsearch');
 btnSrch.addEventListener('click', function () {
   let inputSrch = ( < HTMLInputElement > document.getElementById('inputsearch')).value;
   //console.log(inputSrch);
   let stringNew = inputSrch.toUpperCase();
-  var url = 'http://newsapi.org/v2/everything?' +
-    `q=${stringNew}&` +
-    `from=${fecha}&` +
-    'sortBy=popularity&' +
-    'apiKey=d910f6e9c0b04462bfec49435efb1eb8';
+  let apiURL = APIURL+`/news?string=${stringNew}&date=${fecha}`
+  sendHTTPRequest(apiURL,null,HTTTPMethods.get,(res)=>{
+    let news = JSON.parse(res.data);
+    
+    //console.log(JSON.parse(res.data));
 
-  var req = new Request(url);
+    card.innerHTML = cardHTML;
+    console.log(news);
+    const item = document.getElementById('card').innerHTML;
+    const template = Handlebars.compile(item);
+    document.getElementById('card').innerHTML = template({
+      news: news
+    });
 
-  fetch(req)
+    /*fetch(req)
     .then(function (response) {
       response.json()
         .then(function (data) {
@@ -55,7 +97,12 @@ btnSrch.addEventListener('click', function () {
           });
 
         });
-    });
+    });*/
+  },(err)=>{
+    console.log('error fatal' + err);
+  },null);
+
+  
 })
 
 function myFunction(x) {
