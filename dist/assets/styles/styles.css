@@ -21,6 +21,9 @@ body {
 h5 {
   color: #f7f7f7; }
 
+#createFormModal {
+  color: #000000; }
+
 .row {
   margin-left: 2%;
   margin-right: 2%; }

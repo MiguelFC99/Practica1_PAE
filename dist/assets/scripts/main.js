@@ -65,32 +65,14 @@ btnSrch.addEventListener('click', function () {
         document.getElementById('card').innerHTML = template({
             news: news
         });
-        /*fetch(req)
-        .then(function (response) {
-          response.json()
-            .then(function (data) {
-              let news = data.articles.map(function (x) {
-                return {
-                  'urlToImage': x.urlToImage,
-                  'title': x.title,
-                  'description': x.description,
-                  'url': x.url
-                }
-              })
-    
-              card.innerHTML = cardHTML;
-              console.log(news);
-              const item = document.getElementById('card').innerHTML;
-              const template = Handlebars.compile(item);
-              document.getElementById('card').innerHTML = template({
-                news: news
-              });
-    
-            });
-        });*/
     }, (err) => {
         console.log('error fatal' + err);
     }, null);
+});
+// modal abierto
+$('#createFormModal').on('show.bs.modal', function (event) {
+    // console.log(event.relatedTarget);
+    //agrega tu codigo...
 });
 function myFunction(x) {
     if (x.matches) { // If media query matches
